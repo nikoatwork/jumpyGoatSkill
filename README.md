@@ -2,6 +2,12 @@
 
 A simple way to break big goals into small steps. Then work through them one at a time with Claude's help.
 
+![Jumpy goat doing random stuff](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWEwZ2ZqcmV1ajdvNWtpbTg2Y2NvbHY5NndocWRhMWdjOW1jbDBrdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zz49TLnbLJdXq/giphy.gif)
+
+AI is smart. But it's also a bit like a goat. It'll do random stuff. Jump around. Get distracted. Wander off in weird directions.
+
+This repo helps you get your Claude goat under control. Keep it on track. Make sure it finishes what it started.
+
 ## What's This For?
 
 You know how AI chats are usually one-and-done? Ask a question, get an answer, move on.
