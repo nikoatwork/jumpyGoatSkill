@@ -1,62 +1,39 @@
 # Jumpy Goat Task Manager
 
-A simple way to break big goals into small steps. Then work through them one at a time with Claude's help.
+A Claude Code skill for structured task management. Break down goals into actionable task lists and execute them incrementally with AI assistance.
 
-![Jumpy goat doing random stuff](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWEwZ2ZqcmV1ajdvNWtpbTg2Y2NvbHY5NndocWRhMWdjOW1jbDBrdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zz49TLnbLJdXq/giphy.gif)
+## Why Use This?
 
-AI is smart. But it's also a bit like a goat. It'll do random stuff. Jump around. Get distracted. Wander off in weird directions.
+Most AI interactions are one-shot: you ask, it answers, done. But real work is iterative — feature builds, marketing campaigns, sales processes, research projects all require multiple steps, context preservation, and checkpoints.
 
-This repo helps you get your Claude goat under control. Keep it on track. Make sure it finishes what it started.
+This skill brings structure to AI-assisted work:
 
-## What's This For?
+- **Break down goals** into parent tasks and sub-tasks
+- **Execute incrementally** in small logical chunks, pausing before risky or ambiguous actions
+- **Review Git commits** and capture important findings as focused follow-up tasks
+- **Track progress** with markdown task lists you can review and share
+- **Archive completed work** for future reference
+- **Preserve shared language** in `glossary.md` and only significant user-facing/architectural highlights in `tasks/changelog.md`
 
-You know how AI chats are usually one-and-done? Ask a question, get an answer, move on.
+Works for any domain: engineering, marketing, GTM, sales, operations, research, content creation.
 
-But real work isn't like that. Projects have multiple steps. You need to keep track of progress. Sometimes you want to pause and review before continuing.
+## Prerequisites
 
-That's what this does:
+- [Claude Code](https://claude.ai/download) installed
+- Anthropic API key configured (or Claude Max subscription)
 
-- **Break down goals** into bite-sized tasks
-- **Work through them** one step at a time
-- **Track your progress** in simple markdown files
-- **Archive finished work** so you can reference it later
+## Installation
 
-Works for anything: marketing campaigns, content creation, research projects, you name it.
-
-## What You'll Need
-
-1. **Claude Code** - Download it from [claude.ai/download](https://claude.ai/download)
-2. **An API key** - Either an Anthropic API key or a Claude Max subscription
-
-Don't have Claude Code yet? No worries. Install it first, then come back here.
-
-## How to Install
-
-### Step 1: Find your project folder
-
-Open your project in Claude Code. Or create a new folder for it.
-
-### Step 2: Create the skills folder
-
-In your terminal (inside Claude Code), run:
+### Global (recommended) — available in every repo
 
 ```bash
-mkdir -p .claude/skills
+mkdir -p ~/.claude/skills
+cp -r /path/to/jumpy-goat-skill ~/.claude/skills/
 ```
 
-This creates a hidden folder where skills live. The `-p` flag just means "create parent folders if needed."
+### Per-project — only available in this repo
 
-### Step 3: Copy this skill into that folder
-
-If you downloaded this repo, copy the whole `jumpy-goat-skill` folder:
-
-```bash
-cp -r /path/to/jumpy-goat-skill .claude/skills/
-```
-
-Replace `/path/to/` with wherever you saved it.
-
-Your folder structure should look like this:
+Copy the `jumpy-goat-skill` folder into your project's `.claude/skills/` directory:
 
 ```
 your-project/
@@ -66,68 +43,86 @@ your-project/
 │           ├── SKILL.md
 │           └── resources/
 │               ├── how-to-create-task-list.md
-│               └── how-to-work-task-list.md
-├── todo/
-├── done/
-└── ... your other files
+│               ├── how-to-work-task-list.md
+│               ├── how-to-review-commit.md
+│               └── how-to-maintain-project-memory.md
+├── glossary.md
+├── tasks/
+│   ├── todo/
+│   ├── done/
+│   └── changelog.md
+└── ...
 ```
 
-### Step 4: Create folders for your task lists
+## Folder Structure
+
+Create the task folders in your project root:
 
 ```bash
-mkdir todo done
+mkdir -p tasks/todo tasks/done
 ```
 
-- **todo/** - Where active task lists live
-- **done/** - Where completed ones get archived
+- **`glossary.md`** - Shared project language, domain terms, and naming conventions
+- **`/tasks/todo`** - Active task lists live here (e.g., `tasks-launch-campaign.md`)
+- **`/tasks/done`** - Completed task lists are archived here with date prefix (e.g., `2024-01-15_tasks-launch-campaign.md`)
+- **`/tasks/changelog.md`** - Highly selective highlights of significant implemented user-facing or major architectural changes; not a task history or decision journal
 
-That's it. You're set up.
+## Quick Start
 
-## How to Use It
+### 1. Create a Task List
 
-### Creating a Task List
+Start with a brain dump or brief. Create a file in `/tasks/todo/`:
 
-Start with a brain dump. Just write down what you're trying to do. Messy is fine.
+```markdown
+# tasks/todo/tasks-product-launch.md
 
-Save it in your `todo/` folder. Something like `todo/tasks-my-project.md`.
+We need to launch the new product next month. Target audience is SMBs.
+Need landing page, email sequence, social posts, and sales deck.
+Budget is limited so focus on organic channels first.
+```
 
 Then tell Claude:
 
-> "Create a task list from @todo/tasks-my-project.md"
+> "Create a task list from @tasks/todo/tasks-product-launch.md"
 
 Claude will:
-1. Ask a few clarifying questions
-2. Show you the main tasks (you say "Go" when ready)
-3. Break those into smaller sub-tasks
-4. Save everything nice and organized
+1. Read `glossary.md` if present
+2. Ask six short clarifying questions, one at a time, building on each answer
+3. Create parent tasks and actionable sub-tasks without a separate approval step unless the plan is high-risk or uncertain
+4. Save the structured task list
 
-### Working Through Tasks
+### 2. Work Through Tasks
 
-When you're ready to start doing the work:
+Tell Claude:
 
-> "Let's work on @todo/tasks-my-project.md"
+> "Let's work on @tasks/todo/tasks-product-launch.md"
 
 Claude will:
-1. Pick up the next task
-2. Help you do it (or do it for you)
-3. Mark it done
-4. Wait for you to say "y" before moving on
+1. Pick up the next logical chunk, usually 1-3 related sub-tasks
+2. Execute it (or guide you through it)
+3. Update task status and record decisions or blockers
+4. Pause before risky or ambiguous actions; wait after each sub-task if you request one-at-a-time execution
 
-That pause is intentional. Gives you a chance to review before continuing.
+### 3. Complete and Archive
 
-### When You're Done
+When all tasks are done, Claude will prompt:
 
-Once all tasks are complete, Claude will ask if you want to archive it.
+> "All tasks complete! Ready to move files to done folder? (y/n)"
 
-Say "y" and it moves to your `done/` folder with the date. Nice and tidy.
+Say "y" and the file moves to `/tasks/done/2024-01-15_tasks-product-launch.md` with a short completion summary. The agent also attempts a Git commit for the finalized work unless you opt out, staging only intentionally touched files. Archiving does not require a changelog entry; the dated task archive already preserves the work history.
+
+### Review a Commit
+
+> "Review HEAD and create follow-up tasks for important findings."
+
+Claude inspects the requested commit (or `HEAD`), reports evidence-backed findings, and creates a focused list in `tasks/todo/` only when warranted. Commit reviews skip the six-question planning flow and do not modify implementation code.
 
 ## Tips
 
-- **Don't overthink the brain dump.** Just write what's in your head. Claude will help organize it.
-- **Review the main tasks before saying "Go."** That's your chance to adjust scope.
-- **Use the pauses.** The "wait for y" thing keeps you in control.
-- **Point to files with @** - Like `@todo/tasks-xyz.md`. Makes it easy for Claude to find them.
-
-## Questions?
-
-Open an issue on GitHub. Happy to help.
+- **Be messy in your brief** - Brain dumps are fine. Claude will ask clarifying questions and structure it for you.
+- **Use the clarification flow** - Each of the six questions sharpens boundaries, architecture, or assumptions before planning.
+- **Add context as you go** - If requirements change mid-task, just tell Claude. It will update the task list.
+- **Name things once** - If a term matters, add it to `glossary.md` so future sessions reuse it.
+- **Keep the changelog selective** - Default to no entry. Only significant implemented user-facing or architectural changes deserve one short dated sentence; task links are optional. Keep decisions, investigations, tests, and routine work in task lists or owning docs. See `resources/how-to-maintain-project-memory.md` for the significance gate.
+- **Choose your pace** - Ask for one-at-a-time execution for approval after each sub-task, or batch mode for larger related groups.
+- **Reference files with @** - Use `@tasks/todo/tasks-xyz.md` to point Claude to specific task lists.
