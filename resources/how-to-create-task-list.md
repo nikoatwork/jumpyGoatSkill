@@ -12,7 +12,7 @@ Turn a goal, brief, or brain dump into a clear Markdown task list that can guide
 ## Defaults
 
 - **Format:** Markdown (`.md`)
-- **Location:** `/tasks/todo/` in the project root
+- **Location:** `tasks/todo/` in the project root
 - **Filename:** `tasks-[topic].md`
 - **Style:** Practical, concise, and outcome-focused
 
@@ -26,7 +26,7 @@ Turn a goal, brief, or brain dump into a clear Markdown task list that can guide
 4. **Create the task list:** Use parent tasks and actionable subtasks.
 5. **Call out decisions:** Add `Clarify` tasks only where a real decision is needed before execution.
 6. **Plan documentation updates:** Include glossary updates for reusable language and owning-doc updates for changed contracts. Keep decisions in the task list or owning docs. Do not add a boilerplate changelog task; only plan a conditional highlight when the expected implemented impact passes the significance gate in `how-to-maintain-project-memory.md`.
-7. **Save the file:** Write to `/tasks/todo/tasks-[topic].md`.
+7. **Save the file:** Write to `tasks/todo/tasks-[topic].md`.
 
 ## Output Format
 
@@ -64,7 +64,7 @@ Use only when helpful:
 - `## Deep Dive` — links to durable research, specs, drafts, or analysis
 - `## Changelog` — optional candidate highlight only for significant user-facing or architectural changes; reassess against implemented impact before adding an entry
 
-If durable artifacts are created, place them in `/deep-dives/[topic]/`. Skip this for normal implementation work where the code or changed files are the artifact.
+If durable artifacts are created, place them in `deep-dives/[topic]/`. Skip this for normal implementation work where the code or changed files are the artifact.
 
 ## Guidelines
 

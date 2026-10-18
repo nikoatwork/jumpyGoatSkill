@@ -49,7 +49,7 @@ A test or edge-case concern may support a task when it provides evidence for a m
 When warranted:
 
 - Follow the format in `how-to-create-task-list.md`.
-- Save it under `/tasks/todo/`, unless project instructions define another canonical location.
+- Save it under `tasks/todo/`, unless project instructions define another canonical location.
 - Name it from the selected commit's subject plus `followup`, using a readable slug: `tasks/todo/tasks-[commit-subject-slug]-followup.md`.
 - Use a title such as `# [Commit subject] Followup`.
 - Add the short commit hash only when needed to prevent a filename collision.

@@ -59,11 +59,11 @@ When all parent tasks are complete, ask whether to archive the task list. If con
 1. Add a short completion summary near the top of the file.
 2. Update `glossary.md` with any durable language discovered during the work.
 3. Apply the changelog significance gate in `how-to-maintain-project-memory.md`. Completion or archiving alone does not qualify; normally leave the changelog unchanged. For qualifying work, add one short dated sentence with an optional task link, not a completion report. Mark boilerplate changelog subtasks skipped when the gate is not met.
-4. Move it from `/tasks/todo/tasks-[topic].md` to `/tasks/done/YYYY-MM-DD_tasks-[topic].md`.
-5. Try to create a git commit for the finalized task work when inside a git repo and the user has not opted out. Stage only files you intentionally touched; avoid unrelated pre-existing changes; report clearly if a commit is blocked.
+4. Move it from `tasks/todo/tasks-[topic].md` to `tasks/done/YYYY-MM-DD_tasks-[topic].md`.
+5. Try to create a git commit for the finalized task work when inside a git repo, the user has not opted out, and host/repository instructions permit it. Request approval if required. Stage only files you intentionally touched; avoid unrelated pre-existing changes; report clearly if a commit is blocked. Do not push unless the user requests it.
 6. Confirm the archive path and commit hash/status.
 
-If a `/deep-dives/[topic]/` folder exists, leave it in place.
+If a `deep-dives/[topic]/` folder exists, leave it in place.
 
 ## Error Handling
 
