@@ -1,69 +1,34 @@
-# Jumpy Goat Task Manager
+# Jumpy Goat Skills
 
-One [Agent Skill](https://agentskills.io/specification) for **Claude Code, Pi, and Codex**. Break goals into actionable Markdown task lists, execute in small chunks, review Git commits, and archive completed work.
+Two [Agent Skills](https://agentskills.io/specification) for **Claude Code, Pi, and Codex**. No plugins, MCP servers, or runtime dependencies.
 
-The same `SKILL.md` and resources work in all three agents. No plugins, MCP servers, or runtime dependencies are needed. Install and authenticate your chosen agent separately; Git is needed only for commit reviews and commits.
-
-## Install
-
-Clone this repository, then run the copy commands from its root:
-
-```bash
-git clone https://github.com/nikoatwork/jumpyGoatSkill.git jumpy-goat-skill
-cd jumpy-goat-skill
-```
-
-Choose a location:
-
-| Agent | Personal: all projects | Project: shared with the repo |
+| Skill | Say | What it does |
 | --- | --- | --- |
-| Claude Code | `~/.claude/skills/jumpy-goat-skill` | `.claude/skills/jumpy-goat-skill` |
-| Pi | `~/.agents/skills/jumpy-goat-skill` | `.agents/skills/jumpy-goat-skill` |
-| Codex | `~/.agents/skills/jumpy-goat-skill` | `.agents/skills/jumpy-goat-skill` |
+| `jumpy-goat-skill` | "create a task list", "work through tasks/todo/…", "unattended" | Turns a brief into a Markdown task list, executes it with proof and a done gate, then archives and commits. Also reviews commits into follow-up lists. |
+| `jumpy-loop` | "jumpy loop" | Reviews a code change with one read-only reviewer from another model provider, in rounds, until it approves. |
 
-Pi and Codex share the `.agents/skills` installation. Pi also supports its native `~/.pi/agent/skills/` and `.pi/skills/` directories; choose one location to avoid duplicate skill names.
+Each skill works on its own. `jumpy-goat-skill` uses `jumpy-loop` for code review when it is installed and falls back to a plain subagent review otherwise.
 
-### Personal installation
+## Install and update
 
-```bash
-# Pi and Codex (one copy serves both):
-target="$HOME/.agents/skills/jumpy-goat-skill"
-mkdir -p "$target"
-cp SKILL.md "$target/"
-cp -R resources "$target/"
-
-# Claude Code (skip if you don't use it):
-target="$HOME/.claude/skills/jumpy-goat-skill"
-mkdir -p "$target"
-cp SKILL.md "$target/"
-cp -R resources "$target/"
-```
-
-### Project installation
-
-From this skill repository, set `project` to the project that should use it:
+One command installs both skills, and re-running it updates them to the latest `master`:
 
 ```bash
-project="/absolute/path/to/your-project"
+# Personal: every project on this machine
+curl -fsSL https://raw.githubusercontent.com/nikoatwork/jumpyGoatSkill/master/install.sh | sh -s -- --global
 
-# Pi and Codex:
-target="$project/.agents/skills/jumpy-goat-skill"
-mkdir -p "$target"
-cp SKILL.md "$target/"
-cp -R resources "$target/"
-
-# Claude Code (skip if you don't use it):
-target="$project/.claude/skills/jumpy-goat-skill"
-mkdir -p "$target"
-cp SKILL.md "$target/"
-cp -R resources "$target/"
+# Project: commit the skills so every contributor gets them
+curl -fsSL https://raw.githubusercontent.com/nikoatwork/jumpyGoatSkill/master/install.sh | sh -s -- --project .
+git add .agents/skills .claude/skills && git commit -m "Update jumpy goat skills"
 ```
 
-These commands copy only the skill and its resources, not this repository's Git history. Re-run them after pulling updates. Avoid installing both personal and project copies unless you intentionally manage their precedence.
+The script copies each skill to `.agents/skills/<name>` (read by Codex and Pi) and links it from `.claude/skills/<name>` (read by Claude Code). Each copy records its source commit in `.installed-from`. Options: `--ref <branch-or-tag>` pins a version; `--source <local-clone>` installs from a working copy.
+
+If a project has committed copies and you also installed them personally, Claude Code prefers the personal copy. Re-run the project install to bring the committed copy up to date.
 
 ## Activate
 
-Start the agent in the **project you want to work on**, not the installed skill directory. All three agents can select the skill automatically from a matching request. To invoke it explicitly:
+Start the agent in the project you want to work on. Agents pick the skills from matching requests, or invoke them explicitly:
 
 | Agent | Example |
 | --- | --- |
@@ -71,65 +36,34 @@ Start the agent in the **project you want to work on**, not the installed skill 
 | Pi | `/skill:jumpy-goat-skill Create a task list for the product launch` |
 | Codex | `$jumpy-goat-skill Create a task list for the product launch` |
 
-After installation or updates, start a new Claude Code session, run `/reload` in Pi, or restart Codex if the skill does not appear. In Codex, `/skills` also opens the skill selector. These are chat inputs, not shell commands.
-
-## Project Files
-
-Project paths are relative to the **target project root**, never the skill installation or filesystem root. Existing repository instructions and canonical locations take precedence.
-
-```text
-your-project/
-├── glossary.md                 # Optional shared language
-└── tasks/
-    ├── todo/                   # Active task lists
-    ├── done/                   # Dated completed lists
-    └── changelog.md            # Optional significant highlights only
-```
-
-Create folders as needed with `mkdir -p tasks/todo tasks/done`. Do not create a glossary or changelog unless there is useful content for it.
+After installing or updating, start a new Claude Code session, run `/reload` in Pi, or restart Codex.
 
 ## Use
 
-These plain-language requests work in any of the three agents; no `@` file-mention syntax is required.
+**Create a task list.** "Use jumpy-goat-skill to create a task list from tasks/todo/launch-brief.md." The agent reads `glossary.md` if present, asks six short questions one at a time, and saves `tasks/todo/tasks-[topic].md`.
 
-### Create a task list
+**Execute.** "Work through tasks/todo/tasks-product-launch.md." The agent works in small chunks and pauses before risky actions. Ask for **one at a time** to approve each subtask, or say **unattended** to let it run to the end: it decides defaults itself, records them under `## Decisions`, and asks only when it cannot continue.
 
-> Use jumpy-goat-skill to create a task list from tasks/todo/launch-brief.md.
+**Finish.** A list is finalized only after the done gate: every change has proof, required checks pass, code changes were reviewed, and no blocker is open. The agent then adds a summary, moves the list to `tasks/done/YYYY-MM-DD_tasks-[topic].md`, commits the task's changes, and reports every decision it made for you. It never pushes unless asked.
 
-Start with a brief or a messy brain dump. The agent reads `glossary.md` if present, asks **six short questions one at a time**, and saves parent tasks and executable subtasks in `tasks/todo/tasks-[topic].md`. A separate parent-task approval step is needed only for high-risk or uncertain plans.
+**Review a commit.** "Use jumpy-goat-skill to review HEAD." Reports evidence-backed findings and creates a follow-up list only when warranted.
 
-### Execute tasks
+**Review loop.** "jumpy loop" before you merge a code change. Up to 3 rounds (5 for security or data-loss risks); findings are blocker, should, or nit; the agent fixes or pushes back with evidence.
 
-> Use jumpy-goat-skill to work through tasks/todo/tasks-product-launch.md.
+## Project files
 
-The agent works in small logical chunks, usually 1–3 related subtasks, updates status, records decisions or blockers, and pauses before risky or ambiguous actions. Ask for **one-at-a-time execution** to approve each subtask, or **batch mode** for larger groups. Host permissions and approval rules always apply.
+Paths are relative to the target project root. Existing repository instructions take precedence.
 
-### Complete and archive
+```text
+your-project/
+├── glossary.md          # Optional shared language
+└── tasks/
+    ├── todo/            # Active task lists
+    ├── done/            # Dated completed lists
+    └── changelog.md     # Optional, significant highlights only
+```
 
-Once the work is complete, the agent asks before archiving. With approval, it adds a short summary and moves the list to `tasks/done/YYYY-MM-DD_tasks-[topic].md`.
-
-It attempts a Git commit only when host/repository instructions allow it and you have not opted out, staging only intentionally touched files. It reports blocked operations and does not push unless you request it. Completion and archiving do not require a changelog entry.
-
-### Review a commit
-
-> Use jumpy-goat-skill to review HEAD and create follow-up tasks for important findings.
-
-Specify a commit instead of `HEAD` when needed. The agent reports evidence-backed findings and creates a focused follow-up list only when warranted. Reviews skip the six-question planning flow and do not modify implementation code.
-
-### Preserve useful context
-
-- **`glossary.md`:** reusable terms, naming conventions, and shared project language.
-- **Task lists and owning docs:** progress, decisions, tradeoffs, and verification.
-- **`tasks/changelog.md`:** only significant implemented user-facing or major architectural changes. Default to no entry; qualifying entries are one short dated sentence.
-
-## Skill Resources
-
-- [Create task lists](resources/how-to-create-task-list.md)
-- [Execute and archive tasks](resources/how-to-work-task-list.md)
-- [Review a commit](resources/how-to-review-commit.md)
-- [Maintain project language and highlights](resources/how-to-maintain-project-memory.md)
-
-## Agent Documentation
+## Agent documentation
 
 - [Claude Code skills](https://code.claude.com/docs/en/skills)
 - [Pi skills](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md)

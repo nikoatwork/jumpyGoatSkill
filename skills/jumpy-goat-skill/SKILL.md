@@ -1,6 +1,6 @@
 ---
 name: jumpy-goat-skill
-description: Create and work through structured task lists, review Git commits into actionable follow-up lists, and maintain project changelogs. Use for planning, todos, commit reviews, incremental execution, and task completion.
+description: Create and work through structured task lists, attended or unattended, with proof and a done gate before archiving; review Git commits into follow-up lists; maintain project changelogs. Use for planning, todos, commit reviews, incremental or unattended execution, and task completion.
 ---
 
 ## Overview
@@ -15,7 +15,7 @@ Use the same skill in Claude Code, Pi, and Codex; no agent-specific tools, plugi
 - Use the host's available file-reading, editing, and shell tools; do not assume particular tool names or slash commands during execution.
 - Resolve `resources/...` relative to this `SKILL.md`. Resolve sibling resource links relative to the resource file containing them.
 - Resolve project files (`tasks/...`, `glossary.md`, `deep-dives/...`) relative to the target project root, never the installed skill directory or filesystem root. Follow the project's canonical locations when defined.
-- Read the relevant resource before planning, executing, reviewing, or maintaining project language and highlights. Ask clarification questions in ordinary chat, one at a time for the planning flow; no special question tool is required.
+- Read the relevant resource before planning, executing, reviewing, or maintaining project language and highlights. Ask clarification questions in ordinary chat, one at a time for the planning flow. In unattended mode, use the host's question tool when it has one.
 - Perform writes and Git operations only when allowed by the host and user instructions. If blocked by sandboxing, permissions, or unavailable tools, report the blocker rather than claiming success.
 
 ## Voice
@@ -35,7 +35,7 @@ Be concise, direct, and action-oriented. Treat the user as the orchestrator. Ask
 ## Resources
 
 - `resources/how-to-create-task-list.md` - Instructions for generating task lists from goals or brief
-- `resources/how-to-work-task-list.md` - Protocol for incremental execution and optional one-at-a-time checkpoints
+- `resources/how-to-work-task-list.md` - Execution modes (default, one at a time, unattended), scope, proof, review, done gate, and completion
 - `resources/how-to-review-commit.md` - Review a Git commit and create a follow-up task list when warranted
 - `resources/how-to-maintain-project-memory.md` - Protocol for shared language and the significance gate for changelog entries
 
@@ -43,10 +43,10 @@ Be concise, direct, and action-oriented. Treat the user as the orchestrator. Ask
 
 **Creating:** Read `glossary.md` if present, then ask the 6-question sequential clarification flow from `resources/how-to-create-task-list.md` before creating a practical task list in `tasks/todo/`.
 
-**Executing:** Work in small logical chunks, update task status, sharpen unclear language, and pause before risky or ambiguous actions.
+**Executing:** Work in small logical chunks, update task status, and pause before risky or ambiguous actions. One at a time on request. **Unattended** ("unattended", "full send", "finish it"): run to the done gate and finalize, deciding defaults yourself and asking only through the host's question tool. Fix the case that happened, not every case that could. Record proof per parent task; get a read-only review of code changes before finalizing.
 
 **Commit review:** Inspect `HEAD` or a requested commit using `resources/how-to-review-commit.md`. Create a focused follow-up list only for findings important enough to track; skip the normal six-question planning flow unless blocked.
 
 **Project memory:** Maintain `glossary.md` for shared language. Treat `tasks/changelog.md` as a highly selective highlights log, not task/decision history: only significant implemented user-facing changes or major architectural changes qualify. Default to no entry; keep routine work, investigations, decisions, and verification in the task list or owning docs.
 
-**Completion:** Archive approved completed task lists to `tasks/done/` with a date prefix. Completion, archiving, or committing does not require a changelog entry. Apply the significance gate in `resources/how-to-maintain-project-memory.md`; qualifying entries are one short dated sentence with an optional task link.
+**Completion:** When the done gate passes, finalize, archive to `tasks/done/` with a date prefix, and commit the task's scoped changes in the same turn unless the user opted out. Report the commit hash and every decision made on the user's behalf. Completion, archiving, or committing does not require a changelog entry; apply the significance gate in `resources/how-to-maintain-project-memory.md`.
