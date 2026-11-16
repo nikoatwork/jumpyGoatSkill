@@ -40,15 +40,15 @@ After installing or updating, start a new Claude Code session, run `/reload` in 
 
 ## Use
 
-**Create a task list.** "Use jumpy-goat-skill to create a task list from tasks/todo/launch-brief.md." The agent reads `glossary.md` if present, asks six short questions one at a time, and saves `tasks/todo/tasks-[topic].md`.
+**Create a task list.** "Use jumpy-goat-skill to create a task list from tasks/todo/launch-brief.md." The agent reads `glossary.md` if present, asks up to six short questions one at a time (only those that would change the plan; none when the brief is clear), and saves `tasks/todo/tasks-[topic].md`.
 
 **Execute.** "Work through tasks/todo/tasks-product-launch.md." The agent works in small chunks and pauses before risky actions. Ask for **one at a time** to approve each subtask, or say **unattended** to let it run to the end: it decides defaults itself, records them under `## Decisions`, and asks only when it cannot continue.
 
-**Finish.** A list is finalized only after the done gate: every change has proof, required checks pass, code changes were reviewed, and no blocker is open. The agent then adds a summary, moves the list to `tasks/done/YYYY-MM-DD_tasks-[topic].md`, commits the task's changes, and reports every decision it made for you. It never pushes unless asked.
+**Finish.** A list is finalized only after the done gate: every change has proof, required checks pass, code changes got the review their weight calls for (self-check for small ones, `jumpy-loop` for risky or large ones), and no blocker is open. The agent then adds a summary, moves the list to `tasks/done/YYYY-MM-DD_tasks-[topic].md`, commits the task's changes, and reports every decision it made for you. It never pushes unless asked.
 
 **Review a commit.** "Use jumpy-goat-skill to review HEAD." Reports evidence-backed findings and creates a follow-up list only when warranted.
 
-**Review loop.** "jumpy loop" before you merge a code change. Up to 3 rounds (5 for security or data-loss risks); findings are blocker, should, or nit; the agent fixes or pushes back with evidence.
+**Review loop.** "jumpy loop" before you merge a risky or large code change; agents also start it on their own for those, not for small fixes. Up to 3 rounds (5 for security or data-loss risks); findings are blocker, should, or nit; the agent fixes or pushes back with evidence.
 
 ## Project files
 

@@ -30,7 +30,11 @@ Record one `Proof:` line under each completed parent task. Without proof, the ta
 
 ## Review
 
-Before finalizing a code change, get an independent, read-only review of the diff and fix or decline each finding with a reason. Use the `jumpy-loop` skill when it is installed. Otherwise, brief a fresh subagent (ideally another provider's model) to review the diff against the intent and report bugs, broken callers, and unneeded code. Without subagents, reread the full diff against the intent yourself and say so.
+Size the review to the change (see "Match Effort to the Job" in `SKILL.md`):
+
+- **Light and medium code changes:** reread the full diff against the intent yourself before finalizing, fix what you find, and say you did. No subagent.
+- **Heavy code changes** (security, sign-in or permissions, data loss or migrations, money, concurrency, shared calculations, or a large diff): get an independent, read-only review and fix or decline each finding with a reason. Use the `jumpy-loop` skill when it is installed. Otherwise, brief a fresh subagent (ideally another provider's model) to review the diff against the intent and report bugs, broken callers, and unneeded code. Without subagents, reread the full diff yourself and say so.
+- **Any size, on request:** when the user asks for a review or a loop, run it.
 
 Skip review for docs-only, task-list-only, and formatting-only changes.
 
@@ -41,7 +45,7 @@ Finalize only when all of these are true:
 - Every required subtask is `[x]`, or `[~]` with a reason.
 - Proof covers every change in the diff.
 - The checks the project requires pass, or pre-existing failures are recorded.
-- Review findings are fixed or declined with a reason (code changes).
+- The review the change's weight calls for is done, and its findings are fixed or declined with a reason (code changes).
 - No blocker is open.
 - `Relevant Files` matches what actually changed.
 

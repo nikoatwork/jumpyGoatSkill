@@ -20,7 +20,7 @@ Turn a goal, brief, or brain dump into a clear Markdown task list that can guide
 
 1. **Understand the goal:** Read the brief or user request and identify the desired outcome.
 2. **Load project memory:** Read `glossary.md` if present. Read `tasks/changelog.md` if recent history may affect the plan.
-3. **Clarify architecture first:** Before creating the task list, ask exactly 6 short, conversational clarifying questions, one at a time.
+3. **Clarify only what matters:** Before creating the task list, ask up to 6 short, conversational clarifying questions, one at a time, and only those whose answers would change the plan. Ask none when the brief is clear or the decisions are already made; ask more of the six for large, risky, or ambiguous work.
    Each question must use the previous answer to reduce implementation-architecture ambiguity and misunderstanding risk.
    Prefer questions that sharpen boundaries, data/control flow, lifecycle, source of truth, integration points, failure modes, and reversibility.
 4. **Create the task list:** Use parent tasks and actionable subtasks.

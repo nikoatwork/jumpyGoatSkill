@@ -1,11 +1,17 @@
 ---
 name: jumpy-loop
-description: Review a code change in a loop with one independent, read-only reviewer from another model provider until it approves or the round budget ends. Use when the user says "jumpy loop" or asks for a review loop, or before finalizing a code change.
+description: Review a code change in a loop with one independent, read-only reviewer from another model provider until it approves or the round budget ends. Use when the user says "jumpy loop" or asks for a review loop, or before finalizing a heavy code change (security, sign-in or permissions, data loss or migrations, money, concurrency, shared calculations, or a large diff). Not for small, low-risk changes; reread those yourself.
 ---
 
 # Jumpy Loop
 
 Make a change more correct with the smallest possible edits. One reviewer, a few rounds, no scope creep. Push back on findings you disagree with. This skill grants no extra permissions and never pushes, opens PRs, or comments unless the user asks.
+
+## When to Use
+
+- The user says "jumpy loop" or asks for a review loop: always, at any size.
+- Otherwise only for heavy changes: security, sign-in or permissions, data loss or migrations, money, concurrency, shared calculations many features rely on, or a large diff. A project's `AGENTS.md` or `CLAUDE.md` may set its own thresholds.
+- Not for small, low-risk changes, docs, or formatting. Reread those diffs yourself instead; a cross-provider loop costs more than it finds there.
 
 ## Reviewer
 
